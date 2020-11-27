@@ -5,7 +5,7 @@ import Home from '../views/Home';
 import Login from "../views/Login";
 import Register from "../views/Register";
 import Search from "../views/Search";
-Vue.use(VueRouter);
+Vue.use(VueRouter); //安装插件
 
 export default new VueRouter({
     routes: [

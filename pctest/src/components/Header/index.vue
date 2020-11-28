@@ -38,7 +38,12 @@
       <!-- 右侧搜索区域 -->
       <div class="searchArea">
         <form action="###" class="searchForm">
-          <input type="text" id="autocomplete" class="input-error input-xxlarge" />
+          <input
+            type="text"
+            id="autocomplete"
+            class="input-error input-xxlarge"
+            v-model="searchText"
+          />
           <button @click="search" class="sui-btn btn-xlarge btn-danger" type="button">搜索</button>
         </form>
       </div>
@@ -49,9 +54,28 @@
 <script>
 export default {
   name: "Header",
+  data() {
+    return {
+      searchText: "",
+    };
+  },
   methods: {
     search() {
-      this.$router.push("/search");
+      /* const { searchText } = this;
+      const params = searchText ? `/${searchText}` : "";
+      const location = "/search" + params;
+      this.$router.push(location); */
+
+      const { searchText } = this;
+      const location = {
+        name: "search", //命名路由
+      };
+      if (searchText) {
+        location.params = {
+          searchText,
+        };
+      }
+      this.$router.push(location);
     },
   },
 };

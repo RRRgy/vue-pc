@@ -164,6 +164,9 @@ export default {
     },
   },
   mounted() {
+    // 请求之前判断vuex有没有数据
+    if (this.categoryList.length) return;
+
     this.getCategoryList();
   },
 };

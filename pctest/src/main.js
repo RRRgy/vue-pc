@@ -7,6 +7,10 @@ import store from "./store"
 
 
 import './plugins/element.js'
+
+// 引入mockServer  为了加载里面代码 里面代码一旦加载，就去启动mock服务器。从而拦截相应请求
+import './mock/mockServer'
+
 import "./styles/reset.css";
 Vue.config.productionTip = false
 

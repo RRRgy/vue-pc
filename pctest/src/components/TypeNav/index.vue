@@ -417,11 +417,11 @@
 </template>
 
 <script>
-import { getBaseCategoryList } from "@api/home";
+import { mapState, mapActions } from "vuex";
 
 export default {
   name: "TypeNav",
-  data() {
+  /*  data() {
     return {
       //2.此时先初始化一个响应式数据
       categoryList: [],
@@ -430,6 +430,21 @@ export default {
   async mounted() {
     const result = await getBaseCategoryList(); //1.此时更新响应式数据希望用户界面也变化所以定义data
     this.categoryList = result;
+  }, */
+
+  computed: {
+    ...mapState({
+      // categoryList就是组件能接受到的数据
+      // 它的值是一个函数，函数内部会调用得到值
+      // 调用时会将所有vuex数据传递进去，就是state
+      categoryList: (state) => state.home.categoryList,
+    }),
+  },
+  methods: {
+    ...mapActions(["getCategoryList"]),
+  },
+  mounted() {
+    this.getCategoryList();
   },
 };
 </script>

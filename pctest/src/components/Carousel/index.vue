@@ -1,5 +1,5 @@
 <template>
-  <div class="swiper-container">
+  <div class="swiper-container" ref="swiper">
     <div class="swiper-wrapper">
       <div class="swiper-slide" v-for="carousel in carouselList" :key="carousel.id">
         <img :src="carousel.imgUrl" />
@@ -31,30 +31,37 @@ export default {
   },
   watch: {
     carouselList() {
-      if (this.Swiper) return;
+      if (this.swiper) return;
       this.$nextTick(() => {
-        this.swiper = new Swiper(".swiper-container", {
-          loop: true, //循环模式启动
-          autoplay: {
-            //自动播放
-            delay: 2000, //间隔时间
-            disableOnInteraction: false, //点击下一页时仍会自动播放功能
-          },
-          pagination: {
-            el: ".swiper-pagination",
-            clickable: true,
-          },
-          navigation: {
-            nextEl: ".swiper-button-next",
-            prevEl: ".swiper-button-prev",
-          },
-        });
+        this.initSwiper();
       });
     },
   },
+  methods: {
+    initSwiper() {
+      this.swiper = new Swiper(this.$refs.swiper, {
+        loop: true, //循环模式启动
+        autoplay: {
+          //自动播放
+          delay: 2000, //间隔时间
+          disableOnInteraction: false, //点击下一页时仍会自动播放功能
+        },
+        pagination: {
+          el: ".swiper-pagination",
+          clickable: true,
+        },
+        navigation: {
+          nextEl: ".swiper-button-next",
+          prevEl: ".swiper-button-prev",
+        },
+      });
+    },
+  },
+  mounted() {
+    if (!this.carouselList.length) return;
+    this.initSwiper();
+  },
 };
-
-
 </script>
 
 <style lang='less' scoped>

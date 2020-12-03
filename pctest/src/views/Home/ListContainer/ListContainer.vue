@@ -94,14 +94,15 @@ import Carousel from "@comps/Carousel";
 
 export default {
   name: "ListContainer",
+  methods: {
+    ...mapActions(["getBanners"]),
+  },
   computed: {
     ...mapState({
       banners: (state) => state.home.banners,
     }),
   },
-  methods: {
-    ...mapActions(["getBanners"]),
-  },
+  
   async mounted() {
     await this.getBanners();
 

@@ -37,14 +37,14 @@
       </h1>
       <!-- 右侧搜索区域 -->
       <div class="searchArea">
-        <form action="###" class="searchForm">
+        <form class="searchForm" @submit.prevent="search">
           <input
             type="text"
             id="autocomplete"
             class="input-error input-xxlarge"
             v-model="searchText"
           />
-          <button @click="search" class="sui-btn btn-xlarge btn-danger" type="button">搜索</button>
+        <button class="sui-btn btn-xlarge btn-danger">搜索</button>
         </form>
       </div>
     </div>
@@ -76,12 +76,22 @@ export default {
         };
       }
       const { categoryName } = this.$route.query;
+
       if (categoryName) {
         location.query = this.$route.query;
       }
 
-      this.$router.push(location);
+      if (this.$route.name === "search") {
+        this.$router.replace(location);
+      } else {
+        this.$router.push(location);
+      }
     },
+  },
+  mounted() {
+    this.$bus.$on("clearKeyword", () => {
+      this.searchText = "";
+    });
   },
 };
 </script>

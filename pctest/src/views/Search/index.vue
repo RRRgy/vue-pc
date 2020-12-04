@@ -46,7 +46,7 @@
           <div class="sui-navbar">
             <div class="navbar-inner filter">
               <ul class="sui-nav">
-                <li :class="{ active: options.order.indexOf('1') > -1 }" @click="setOrder('1')">
+                <li :class="{ active: isOrder('1') }" @click="setOrder('1')">
                   <a>
                     综合
                     <i
@@ -67,7 +67,7 @@
                 <li>
                   <a>评价</a>
                 </li>
-                <li :class="{ active: options.order.indexOf('2') > -1 }" @click="setOrder('2')">
+                <li :class="{ active: isOrder('2') }" @click="setOrder('2')">
                   <a>
                     价格
                     <span>
@@ -75,16 +75,14 @@
                         :class="{
                           iconfont: true,
                           'icon-arrow-up-filling': true,
-                          deactive:
-                            options.order.indexOf('2') > -1 && isPriceDown,
+                          deactive: isOrder('2') && isPriceDown,
                         }"
                       ></i>
                       <i
                         :class="{
                           iconfont: true,
                           'icon-arrow-down-filling': true,
-                          deactive:
-                            options.order.indexOf('2') > -1 && !isPriceDown,
+                          deactive: isOrder('2') && !isPriceDown,
                         }"
                       ></i>
                     </span>
@@ -135,23 +133,13 @@
             </ul>
           </div>
           <!-- 分页器 -->
-          <el-pagination
-            @size-change="handleSizeChange"
+          <Pagination
             @current-change="handleCurrentChange"
             :current-page="options.pageNo"
             :pager-count="7"
-            :page-sizes="[5, 10, 15, 20]"
             :page-size="5"
-            background
-            layout="
-              prev,
-              pager, 
-              next, 
-              total, 
-              sizes, 
-              jumper"
             :total="total"
-          ></el-pagination>
+          />
         </div>
       </div>
     </div>
@@ -162,6 +150,7 @@
 import { mapGetters, mapActions } from "vuex";
 import SearchSelector from "./SearchSelector/SearchSelector";
 import TypeNav from "@comps/TypeNav";
+import Pagination from "@comps/Pagination";
 
 export default {
   name: "Search",
@@ -226,6 +215,7 @@ export default {
       // 清空header组件的keyword
       this.$bus.$emit("clearKeyword");
       // 清除路径params参数
+
       this.$router.replace({
         name: "search",
         query: this.$route.query,
@@ -245,6 +235,7 @@ export default {
     },
     // 添加品牌并更新数据
     addTrademark(trademark) {
+      if (this.options.trademark) return;
       this.options.trademark = trademark;
       this.updateProductList();
     },
@@ -255,6 +246,8 @@ export default {
     },
     // 添加品牌属性并更新数据
     addProp(prop) {
+      // 判断属性是否存在
+      if (this.options.props.indexOf(prop) > -1) return;
       this.options.props.push(prop);
       this.updateProductList();
     },
@@ -263,12 +256,11 @@ export default {
       this.options.props.splice(index, 1);
       this.updateProductList();
     },
+
     setOrder(order) {
       let [orderNum, orderType] = this.options.order.split(":");
 
       if (orderNum === order) {
-        // 看order是1改综合排序
-        // 看order是1改价格排序
         if (order === "1") {
           this.isAllDown = !this.isAllDown;
         } else {
@@ -276,7 +268,6 @@ export default {
         }
         orderType = orderType === "desc" ? "asc" : "desc";
       } else {
-        // 点击一次, 如果点击的是价格，应该初始化为升序
         if (order === "1") {
           orderType = this.isAllDown ? "desc" : "asc";
         } else {
@@ -297,6 +288,10 @@ export default {
     handleCurrentChange(pageNo) {
       this.updateProductList(pageNo);
     },
+    // 判断order以 xxx 开头
+    isOrder(order) {
+      return this.options.order.indexOf(order) > -1;
+    },
   },
   mounted() {
     this.updateProductList();
@@ -304,6 +299,7 @@ export default {
   components: {
     SearchSelector,
     TypeNav,
+    Pagination,
   },
 };
 </script>

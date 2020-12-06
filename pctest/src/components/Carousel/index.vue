@@ -14,13 +14,12 @@
   </div>
 </template>
 
-
 <script>
+// 1. 引入swiper两个文件
 import Swiper, { Navigation, Pagination, Autoplay } from "swiper";
-// 还要引入样式
-import "swiper/swiper-bundle.min.css";
 
 Swiper.use([Navigation, Pagination, Autoplay]);
+
 export default {
   name: "Carousel",
   props: {
@@ -32,6 +31,7 @@ export default {
   watch: {
     carouselList() {
       if (this.swiper) return;
+
       this.$nextTick(() => {
         this.initSwiper();
       });
@@ -40,12 +40,13 @@ export default {
   methods: {
     initSwiper() {
       this.swiper = new Swiper(this.$refs.swiper, {
-        loop: true, //循环模式启动
+        loop: true, // 循环模式选项
         autoplay: {
-          //自动播放
-          delay: 2000, //间隔时间
-          disableOnInteraction: false, //点击下一页时仍会自动播放功能
+          // 自动轮播
+          delay: 2000, // 轮播间隔时间
+          disableOnInteraction: false, // 当用户点击下一页时，仍会开启自动轮播
         },
+
         pagination: {
           el: ".swiper-pagination",
           clickable: true,
@@ -59,10 +60,11 @@ export default {
   },
   mounted() {
     if (!this.carouselList.length) return;
+
     this.initSwiper();
   },
 };
 </script>
 
-<style lang='less' scoped>
+<style lang="less" scoped>
 </style>

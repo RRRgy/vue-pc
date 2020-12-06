@@ -24,7 +24,6 @@
                   :data-categoryId="category.categoryId"
                   :data-categoryType="1"
                 >{{ category.categoryName }}</a>
-               
               </h3>
               <div class="item-list clearfix">
                 <div class="subitem">
@@ -36,7 +35,6 @@
                         :data-categoryId="child.categoryId"
                         :data-categoryType="2"
                       >{{ child.categoryName }}</a>
-                     
                     </dt>
                     <dd>
                       <!-- 三级分类名称 -->
@@ -46,22 +44,6 @@
                           :data-categoryId="grandChild.categoryId"
                           :data-categoryType="3"
                         >{{ grandChild.categoryName }}</a>
-                        <!-- <router-link
-                        :to="`/search?categoryName=${grandChild.categoryName}&category3Id=${grandChild.categoryId}`"
-                        >{{ grandChild.categoryName }}</router-link
-                        >-->
-                        <!-- <a
-                        @click.prevent="
-                          $router.push({
-                            name: 'search',
-                            query: {
-                              categoryName: grandChild.categoryName,
-                              category3Id: grandChild.categoryId,
-                            },
-                          })
-                        "
-                        >{{ grandChild.categoryName }}</a
-                        >-->
                       </em>
                     </dd>
                   </dl>
@@ -80,16 +62,7 @@ import { mapState, mapActions } from "vuex";
 
 export default {
   name: "TypeNav",
-  /*  data() {
-    return {
-      //2.此时先初始化一个响应式数据
-      categoryList: [],
-    };
-  },
-  async mounted() {
-    const result = await getBaseCategoryList(); //1.此时更新响应式数据希望用户界面也变化所以定义data
-    this.categoryList = result;
-  }, */
+
   data() {
     return {
       isHomeShow: this.$route.path === "/",
@@ -98,9 +71,6 @@ export default {
   },
   computed: {
     ...mapState({
-      // categoryList就是组件能接受到的数据
-      // 它的值是一个函数，函数内部会调用得到值
-      // 调用时会将所有vuex数据传递进去，就是state
       categoryList: (state) => state.home.categoryList,
     }),
   },
@@ -123,7 +93,7 @@ export default {
         },
       };
       const { searchText } = this.$route.params;
-      
+
       if (searchText) {
         location.params = {
           searchText,

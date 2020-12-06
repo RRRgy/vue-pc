@@ -20,16 +20,16 @@
   </div>
 </template>
 
-
 <script>
 export default {
   name: "Pagination",
   props: {
+    // 当前页码
     currentPage: {
       type: Number,
       default: 1,
     },
-
+    // 显示按钮的数量
     pagerCount: {
       type: Number,
       validator(val) {
@@ -49,16 +49,17 @@ export default {
       default: 0,
     },
   },
-  // props只读不写，所以可以定义data
   data() {
     return {
       myCurrentPage: this.currentPage,
     };
   },
   watch: {
+    // 让每次页码发生变化加载新数据
     myCurrentPage(currentPage) {
       this.$emit("current-change", currentPage);
     },
+    // 当外面页面发生变化，里面页面也要变化
     currentPage(currentPage) {
       this.myCurrentPage = currentPage;
     },
@@ -69,8 +70,9 @@ export default {
       // 向上取整
       return Math.ceil(this.total / this.pageSize);
     },
-
+    // 计算中间按钮的开始和结束的按钮值
     startEnd() {
+      // 收集所有参与计算的参数
       const { myCurrentPage, pagerCount, totalPages } = this;
 
       // 中间start-end总计的按钮数量（不包含开头和结尾）
@@ -79,10 +81,13 @@ export default {
       const halfCount = Math.floor(count / 2);
 
       let start, end;
+      // 开始计算
 
       if (myCurrentPage >= totalPages - halfCount) {
+        // 1 ... 5 6 7 8 [9] 10
         start = totalPages - count;
       } else {
+        // 正常情况
         start = myCurrentPage - halfCount;
       }
 
@@ -90,9 +95,11 @@ export default {
         start = 2;
       }
 
+      // 正常情况
       end = start + count - 1;
 
       if (end >= totalPages) {
+        // 1 [2] 3
         end = totalPages - 1;
       }
 

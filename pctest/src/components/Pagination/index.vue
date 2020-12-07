@@ -1,21 +1,37 @@
 <template>
   <div class="pagination">
-    <button :disabled="myCurrentPage <= 1" @click="setCurrentPage(myCurrentPage - 1)">上一页</button>
-    <button :class="{ active: myCurrentPage === 1 }" @click="setCurrentPage(1)">1</button>
+    <button
+      :disabled="myCurrentPage <= 1"
+      @click="setCurrentPage(myCurrentPage - 1)"
+    >
+      上一页
+    </button>
+    <button :class="{ active: myCurrentPage === 1 }" @click="setCurrentPage(1)">
+      1
+    </button>
     <button v-show="startEnd.start > 2">...</button>
     <button
       v-for="item in mapBtnsCount"
       :key="item"
       @click="setCurrentPage(startEnd.start + item - 1)"
       :class="{ active: myCurrentPage === startEnd.start + item - 1 }"
-    >{{ startEnd.start + item - 1 }}</button>
+    >
+      {{ startEnd.start + item - 1 }}
+    </button>
     <button v-show="startEnd.end < totalPages - 1">...</button>
     <button
       :class="{ active: myCurrentPage === totalPages }"
       v-show="totalPages > 1"
       @click="setCurrentPage(totalPages)"
-    >{{ totalPages }}</button>
-    <button :disabled="myCurrentPage >= totalPages" @click="setCurrentPage(myCurrentPage + 1)">下一页</button>
+    >
+      {{ totalPages }}
+    </button>
+    <button
+      :disabled="myCurrentPage >= totalPages"
+      @click="setCurrentPage(myCurrentPage + 1)"
+    >
+      下一页
+    </button>
     <button>总数：{{ total }}</button>
   </div>
 </template>
@@ -33,6 +49,10 @@ export default {
     pagerCount: {
       type: Number,
       validator(val) {
+        // 验证，验证通过才会有用
+        // 大于等于 5 且小于等于 21 的奇数
+        // 返回true验证成功，
+        // 返回false验证失败
         return val >= 5 && val <= 21 && val % 2 === 1;
       },
       default: 7,
@@ -51,12 +71,15 @@ export default {
   },
   data() {
     return {
+      // 为了方便修改myCurrentPage，定义data数据
+      // 原因：props数据只读不能修改
       myCurrentPage: this.currentPage,
     };
   },
   watch: {
     // 让每次页码发生变化加载新数据
     myCurrentPage(currentPage) {
+      // this.$listeners['current-change'](currentPage);
       this.$emit("current-change", currentPage);
     },
     // 当外面页面发生变化，里面页面也要变化
@@ -83,6 +106,32 @@ export default {
       let start, end;
       // 开始计算
 
+      /*
+        start
+          1. start = myCurrentPage - halfCount
+            1...3 4 [5] 6 7...10
+               3   =       5       -    2
+            问题：
+              1 [2] 3 4 5 6 ...10  
+               0    =      2        -    2
+            解决：修正start的值，不能小于1
+
+            问题：
+              1 ... 5 6 7 8 [9] 10  
+              7  =   9  - 2
+           
+        end 
+          2. end = start + count - 1
+            1...3 4 [5] 6 7...10
+               7   =  3  +  5 - 1
+      */
+
+      // 1 [2] 3 4 5 6 ...10
+      // 1...3 4 [5] 6 7...10 正常情况
+      // 1 ... 5 6 7 8 [9] 10  // 1 ... 3 4 5 6 7 8 [9] 10
+      // 1 [2] 3
+      // [1] --> 如果start大于总页数，不显示
+
       if (myCurrentPage >= totalPages - halfCount) {
         // 1 ... 5 6 7 8 [9] 10
         start = totalPages - count;
@@ -92,6 +141,8 @@ export default {
       }
 
       if (start <= 1) {
+        // 1 [2] 3 4 5 6 ...10
+        // [1] 2 3 4 5 6 ...10
         start = 2;
       }
 

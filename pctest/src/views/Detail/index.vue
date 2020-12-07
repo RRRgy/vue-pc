@@ -375,8 +375,7 @@ export default {
     // 加入购物车
     async addCart() {
       try {
-        // 发送请求，加入购物车
-        // actions函数必须返回一个promise对象，才会等待它执行
+       
         await this.updateCartCount({
           skuId: this.skuInfo.id,
           skuNum: this.skuNum,
@@ -400,6 +399,7 @@ export default {
 </script>
 
 <style lang="less" scoped>
+
 .detail {
   .con {
     width: 1200px;
@@ -567,10 +567,22 @@ export default {
               position: relative;
               float: left;
               margin-right: 15px;
+              // 深度样式选择器 -- 选择子组件样式修改
+              // less /deep/
+              // css  >>>
+              // /deep/ .el-input-number {
+              //   width: 110px;
+              // }
+              // /deep/.el-input {
+              //   width: 30px;
+              // }
+              // /deep/ .el-input__inner {
+              //   width: 30px;
+              // }
 
-              .input-number {
-                width: 150px;
-              }
+              // .input-number {
+              //   width: 150px;
+              // }
 
               .itxt {
                 width: 38px;

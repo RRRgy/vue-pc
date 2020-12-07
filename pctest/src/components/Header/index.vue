@@ -5,7 +5,12 @@
       <div class="container">
         <div class="loginList">
           <p>尚品汇欢迎您！</p>
-          <p>
+          <p v-if="$store.state.user.name">
+            <span>{{ $store.state.user.name }}</span>
+            &nbsp;
+            <button>退出</button>
+          </p>
+          <p v-else>
             <span>请</span>
             <router-link to="/login">登录</router-link>
             <router-link to="/register" class="register">免费注册</router-link>
@@ -27,7 +32,7 @@
     <div class="bottom">
       <h1 class="logoArea">
         <router-link class="logo" title="尚品汇" to="/">
-          <img src="./images/logo.png" alt />
+          <img src="./images/logo.png" alt="" />
         </router-link>
       </h1>
       <div class="searchArea">
@@ -38,7 +43,14 @@
             class="input-error input-xxlarge"
             v-model="searchText"
           />
-
+          <!-- 
+            问题：点击搜索，路径出现问号（原因是提交了表单）
+            1. button 按钮如果没有type 那么在表单中 默认type就是submit
+              此时会提交表单，事件就绑定在form上
+                @submit.prevent="search"
+            2. 不用form表单
+                @click="search"
+           -->
           <button class="sui-btn btn-xlarge btn-danger">搜索</button>
         </form>
       </div>
@@ -56,7 +68,40 @@ export default {
     };
   },
   methods: {
+    /**
+     * 搜索功能函数
+     */
+    /* search() {
+      // 获取搜索的数据
+      const { searchText } = this;
+      // 判断是否要添加params参数
+      const params = searchText ? `/${searchText}` : "";
+      // 生成跳转的路径
+      const location = "/search" + params;
+      // 编程式导航：原因将来要做搜索功能（要发送请求）
+      this.$router.push(location);
+    }, */
+
     search() {
+      /*
+        $router.push(location)
+          location 可以是字符串 path/:xxx?key=value
+          location 可以是对象 
+            {
+              path: 路由路径,
+              query: {} 查询字符串参数
+            }
+
+            {
+              name: 命名路由名称,
+              params: {} params参数
+              query: {} 查询字符串参数
+            }
+              命名路由params可选
+
+        编程式导航重复跳转到同一个路径会报错：
+          Uncaught (in promise) NavigationDuplicated: Avoided redundant navigation to current location: "/search".    
+      */
       // 获取搜索的数据
       const { searchText } = this;
       // 编程式导航：原因将来要做搜索功能（要发送请求）
@@ -83,11 +128,33 @@ export default {
         location.query = this.$route.query;
       }
 
+      // if (this.$route.path.indexOf('/search') > -1) {
+      // if (this.$route.path.includes("/search")) {
+      // if (this.$route.path.startsWith("/search")) {
+      // if (/^\/search/.test(this.$route.path)) {
+      // this.$route.path 路径路由
+      // this.$route.name 命名路由名称
       if (this.$route.name === "search") {
         this.$router.replace(location);
       } else {
         this.$router.push(location);
       }
+
+      // this.$router.replace(
+      //   location
+      //   // (res) => {
+      //   //   console.log("成功", res);
+      //   // },
+      //   // (err) => {
+      //   //   console.log(err);
+      //   // }
+      // );
+      // .then((res) => {
+      //   console.log("成功", res);
+      // })
+      // .catch((err) => {
+      //   console.log("err", err);
+      // });
     },
   },
   mounted() {
@@ -100,6 +167,21 @@ export default {
 </script>
 
 <style lang="less" scoped>
+// lang="less" 当前可以使用less写样式
+// scoped 作用域样式代码（当前样式只对当前组件生效，其他组件没有效果）
+/* 
+  当你添加 scoped 属性
+    给当前组件所有结构添加一个唯一的属性 data-v-xxx
+    所有元素选择器都会加上选择这个属性
+      之前: .header-aaa { }
+      之后：.header-aaa[data-v-xxx] {}
+    因为只有当前组件具有这个属性 data-v-xxx
+    所以样式只会对当前组件生效，其他组件不会影响
+*/
+// .header-aaa {
+//   color: red;
+// }
+
 .container {
   width: 1200px;
   margin: 0 auto;

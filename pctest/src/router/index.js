@@ -1,6 +1,7 @@
 // @ts-nocheck
 import Vue from "vue";
 import VueRouter from "vue-router";
+import store from "../store";
 
 import Home from "../views/Home";
 import Login from "../views/Login";
@@ -14,8 +15,7 @@ import Pay from "../views/Pay";
 import PaySuccess from "../views/PaySuccess";
 import Center from "../views/Center";
 
-// 重写push和replace方法
-// 目的：为了让编程式导航重复点击时不报错~
+
 const push = VueRouter.prototype.push;
 const replace = VueRouter.prototype.replace;
 
@@ -40,7 +40,7 @@ VueRouter.prototype.replace = function (location, onComplete, onAbort) {
 // 安装插件
 Vue.use(VueRouter);
 
-export default new VueRouter({
+const router = new VueRouter({
   // 路由配置
   routes: [
     {
@@ -50,8 +50,7 @@ export default new VueRouter({
     {
       path: "/login",
       component: Login,
-      // 当组件加载显示时，meta中的参数会传到$route中
-      // 当组件不加载显示时，meta中的参数不会传
+
       meta: {
         isFooterHide: true,
       },
@@ -81,6 +80,7 @@ export default new VueRouter({
       name: "addcartsuccess",
       path: "/addcartsuccess",
       component: AddCartSuccess,
+
     },
     {
       // 命名路由
@@ -118,3 +118,17 @@ export default new VueRouter({
     return { x: 0, y: 0 };
   },
 });
+
+const permissionPaths = ["/trade", "/pay", "/center"];
+// 路由全局前置守卫
+router.beforeEach((to, from, next) => {
+
+
+  if (permissionPaths.indexOf(to.path) > -1 && !store.state.user.token) {
+    return next("/login");
+  }
+
+  next();
+});
+
+export default router;

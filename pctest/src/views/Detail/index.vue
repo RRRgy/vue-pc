@@ -349,7 +349,7 @@
 </template>
 
 <script>
-import { mapGetters, mapActions } from "vuex";
+import { mapState, mapGetters, mapActions } from "vuex";
 
 import TypeNav from "@comps/TypeNav";
 import ImageList from "./ImageList/ImageList";
@@ -365,6 +365,9 @@ export default {
   },
   computed: {
     ...mapGetters(["categoryView", "skuInfo", "spuSaleAttrList"]),
+    ...mapState({
+      cartList: (state) => state.shopcart.cartList,
+    }),
   },
   methods: {
     ...mapActions(["getProductDetail", "updateCartCount"]),
@@ -375,11 +378,14 @@ export default {
     // 加入购物车
     async addCart() {
       try {
-       
+        // 发送请求，加入购物车
+        // actions函数必须返回一个promise对象，才会等待它执行
         await this.updateCartCount({
           skuId: this.skuInfo.id,
           skuNum: this.skuNum,
         });
+
+        sessionStorage.setItem("cart", JSON.stringify(this.skuInfo));
         // 一旦加入购物车，跳转到加入购物车成功页面
         this.$router.push(`/addcartsuccess?skuNum=${this.skuNum}`);
       } catch (e) {
@@ -399,6 +405,18 @@ export default {
 </script>
 
 <style lang="less" scoped>
+// 深度样式选择器 -- 选择子组件样式修改
+// less /deep/
+// css  >>>
+// /deep/ .el-input-number {
+//   width: 110px;
+// }
+// /deep/.el-input {
+//   width: 30px;
+// }
+// /deep/ .el-input__inner {
+//   width: 30px;
+// }
 
 .detail {
   .con {

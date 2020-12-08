@@ -74,7 +74,7 @@
           <i class="summoney">{{ totalPrice }}</i>
         </div>
         <div class="sumbtn">
-          <router-link class="btn" to="/trade">结算</router-link>
+          <a class="sum-btn" @click="submit">结算</a>
         </div>
       </div>
     </div>
@@ -116,39 +116,17 @@ export default {
       e.target.value = skuNum;
     },
     update(skuId, skuNum, e) {
-      // 当前商品数量是10 e.target.value 6 --> -4  6 - 10
-      // 当前商品数量是3 e.target.value 6 --> 3
-      // console.log(skuId, skuNum, e.target.value);
       if (+e.target.value === skuNum) {
         return;
       }
       this.updateCartCount({ skuId, skuNum: e.target.value - skuNum });
     },
-    /**
-     * 更新商品数量
-     * @params skuId  商品id
-     * @params skuNum 商品增加、减少
-     * @params count  商品数量
-     */
+
     async updateCount(skuId, skuNum) {
-      // if (count <= 1 && skuNum  === -1) {
-      //   // 删除商品
-      //   if (window.confirm('您是否要删除当前商品吗')) {
-      //     // 删除商品
-      //   }
-
-      //   return;
-      // }
-
-      // // 100 是库存总量
-      // if (count >= 100 && skuNum === 1) {
-      //   alert('超出库存了~')
-      //   return;
-      // }
-      // 更新商品
       await this.updateCartCount({ skuId, skuNum });
-      // 刷新页面
-      // this.getCartList();
+    },
+    submit() {
+      this.$router.push("/trade");
     },
   },
   mounted() {
